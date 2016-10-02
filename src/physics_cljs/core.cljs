@@ -1,6 +1,7 @@
 (ns physics-cljs.core
   (:require [quil.core :as q :include-macros true]
-            [quil.middleware :as m]))
+            [quil.middleware :as m]
+            [physics-cljs.physics-test :as pt]))
 
 (enable-console-print!)
 
@@ -23,6 +24,10 @@
    :angle 0})
 
 (defn update-state [state]
+  ;; Tickle the physics engine:
+
+  (.update pt/E pt/engine (/ 1000 60))
+
   ; Update sketch state by changing circle color and position.
   {:color (mod (+ (:color state) 0.7) 255)
    :angle (+ (:angle state) 0.1)})
@@ -37,16 +42,27 @@
         x (* 150 (q/cos angle))
         y (* 150 (q/sin angle))]
     ; Move origin point to the center of the sketch.
-    (q/with-translation [(/ (q/width) 2)
+    #_ (q/with-translation [(/ (q/width) 2)
                          (/ (q/height) 2)]
-      ; Draw the circle.
-      (q/ellipse x y 100 100))))
+                                        ; Draw the circle.q
+      (q/ellipse x y 100 100))
+    ;;(println (-> pt/box-a .-position .-x))
+    (q/ellipse (-> pt/box-a .-position .-x)
+               (-> pt/box-a .-position .-y)
+               20
+               20)
+    (q/ellipse (-> pt/box-b .-position .-x)
+               (-> pt/box-b .-position .-y)
+               20
+               20)
+    ))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
+
 (q/defsketch my-sketch
   :host "canvas"
   :size [500 500]
