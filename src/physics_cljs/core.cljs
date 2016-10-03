@@ -38,24 +38,22 @@
   ; Set circle color.
   (q/fill (:color state) 255 255)
   ; Calculate x and y coordinates of the circle.
-  (let [angle (:angle state)
-        x (* 150 (q/cos angle))
-        y (* 150 (q/sin angle))]
-    ; Move origin point to the center of the sketch.
-    #_ (q/with-translation [(/ (q/width) 2)
-                         (/ (q/height) 2)]
-                                        ; Draw the circle.q
-      (q/ellipse x y 100 100))
-    ;;(println (-> pt/box-a .-position .-x))
-    (q/ellipse (-> pt/box-a .-position .-x)
-               (-> pt/box-a .-position .-y)
-               20
-               20)
-    (q/ellipse (-> pt/box-b .-position .-x)
-               (-> pt/box-b .-position .-y)
-               20
-               20)
-    ))
+
+  (q/rect-mode :center)
+  (q/with-translation [(-> pt/box-a .-position .-x)
+                       (-> pt/box-a .-position .-y)]
+    (q/with-rotation [(-> pt/box-a .-angle)]
+      (q/rect 0 0 80 80)))
+  (q/with-translation [(-> pt/box-b .-position .-x)
+                       (-> pt/box-b .-position .-y)]
+    (q/with-rotation [(-> pt/box-b .-angle)]
+      (q/rect 0 0 80 80)))
+
+  (q/rect (-> pt/ground .-position .-x)
+          (-> pt/ground .-position .-y)
+          810
+          60)
+  )
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
@@ -65,7 +63,7 @@
 
 (q/defsketch my-sketch
   :host "canvas"
-  :size [500 500]
+  :size [600 800]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
