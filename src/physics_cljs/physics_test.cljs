@@ -2,13 +2,23 @@
   (:require [cljsjs.matter]))
 
 (def E js/Matter.Engine)
+(def b js/Matter.Body)
 (def B js/Matter.Bodies)
 (def W js/Matter.World)
 
 (def engine (.create E))
 
-(def box-a (.rectangle B 400 200 80 80))
-(def box-b (.rectangle B 450 50 80 80))
-(def ground (.rectangle B 400 610 810 60 #js {:isStatic true}))
+(defn remember-size [body]
+  (let [min (-> body .-bounds .-min)
+        max (-> body .-bounds .-max)]
+    (set! (.-_size body)
+          #js [(- (.-x max) (.-x min))
+               (- (.-y max) (.-y min))])
+    body))
 
-(.add W (.-world engine) #js [box-a box-b ground])
+(def box-a (-> (.rectangle B 400 200 40 80) remember-size))
+(def box-b (-> (.rectangle B 445 50 80 80) remember-size))
+(def obstacle (-> (.rectangle B 410 300 10 100 #js {:isStatic true}) remember-size))
+(def ground (-> (.rectangle B 300 590 600 20 #js {:isStatic true}) remember-size))
+
+(.add W (.-world engine) #js [box-a box-b obstacle ground])

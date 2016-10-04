@@ -26,11 +26,20 @@
 (defn update-state [state]
   ;; Tickle the physics engine:
 
+  (.rotate pt/b pt/obstacle 0.2)
   (.update pt/E pt/engine (/ 1000 60))
 
   ; Update sketch state by changing circle color and position.
   {:color (mod (+ (:color state) 0.7) 255)
    :angle (+ (:angle state) 0.1)})
+
+(defn draw-rect [r]
+  (q/with-translation [(-> r .-position .-x)
+                       (-> r .-position .-y)]
+    (q/with-rotation [(-> r .-angle)]
+      (let [[w h] (.-_size r)]
+        (q/rect 0 0 w h))))
+  )
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
@@ -40,20 +49,9 @@
   ; Calculate x and y coordinates of the circle.
 
   (q/rect-mode :center)
-  (q/with-translation [(-> pt/box-a .-position .-x)
-                       (-> pt/box-a .-position .-y)]
-    (q/with-rotation [(-> pt/box-a .-angle)]
-      (q/rect 0 0 80 80)))
-  (q/with-translation [(-> pt/box-b .-position .-x)
-                       (-> pt/box-b .-position .-y)]
-    (q/with-rotation [(-> pt/box-b .-angle)]
-      (q/rect 0 0 80 80)))
 
-  (q/rect (-> pt/ground .-position .-x)
-          (-> pt/ground .-position .-y)
-          810
-          60)
-  )
+  (doseq [r [pt/box-a pt/box-b pt/obstacle pt/ground]]
+    (draw-rect r)))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
@@ -63,7 +61,7 @@
 
 (q/defsketch my-sketch
   :host "canvas"
-  :size [600 800]
+  :size [601 601]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
