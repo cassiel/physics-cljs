@@ -15,34 +15,38 @@
 ;; Verbatim from the Quil/ClojureScript example:
 
 (defn setup []
-  ; Set frame rate to 30 frames per second.
+  ;; Set frame rate to 60 frames per second.
   (q/frame-rate 60)
-  ; setup function returns initial state. It contains
-  ; circle color and position.
-  {:color 0
-   :angle 0})
+  ;; setup function returns initial state.
+  (let [engine (m/new-engine)
+        statics (for [x (range 100 1200 100)
+                      y (range 100 500 100)]
+                  (player/box :position [x y]
+                              :size [80 10]
+                              :opts {:isStatic true}))
+        players (for [x (range 100 1200 50)]
+                  (player/disc :position [x 50]
+                               :radius 10
+                               :colour [0 0 0]
+                               :opts {:restitution 1.1}))
+        all (concat statics players)]
+    (m/add-players engine all)
+    {:engine engine
+     :statics statics
+     :players players
+     :all all
+     :rands (repeatedly rand)}))
 
-(defn update-state [state]
+(defn update-state [{:keys [engine statics rands] :as state}]
   ;; Tickle the physics engine:
 
-  ;;(.rotate m/BODY pt/obstacle 0.02)
-  (.update m/ENGINE m/the-engine (/ 1000 60))
+  (doseq [[i p r] (map #(vec [%1 %2 %3]) (range) statics rands)]
+    (.rotate m/BODY (px/get-body p) (- 0.05 (* r 0.1))))
 
-  ; Update sketch state by changing circle color and position.
-  {:color (mod (+ (:color state) 0.7) 255)
-   :angle (+ (:angle state) 0.1)})
+  (.update m/ENGINE engine (/ 1000 60))
+  state)
 
-(defn draw-rect [r]
-  (q/with-translation [(-> r .-position .-x)
-                       (-> r .-position .-y)]
-    (q/with-rotation [(-> r .-angle)]
-      (let [[w h] (.-_size r)]
-        (q/rect 0 0 w h))))
-  )
-
-(def players [(player/box :position [200 200] :size [10 10])])
-
-(defn draw-state [state]
+(defn draw-state [{:keys [all] :as state}]
   ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
   ; Set circle color.
@@ -51,15 +55,13 @@
 
   (q/rect-mode :center)
 
-  (doseq [p players] (px/draw p)))
+  (doseq [p all] (px/draw p)))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
   )
-
-(m/add-players players)
 
 (q/defsketch main
   :host "canvas"

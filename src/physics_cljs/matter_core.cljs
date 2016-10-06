@@ -7,9 +7,9 @@
 (def BODIES js/Matter.Bodies)
 (def WORLD js/Matter.World)
 
-(def the-engine (.create ENGINE))
+(defn new-engine [] (.create ENGINE #js {:timing #js {:timeScale 0.5}}))
 
-(defn add-players [players]
+(defn add-players [engine players]
   (.add WORLD
-        (.-world the-engine)
+        (.-world engine)
         (clj->js (map px/get-body players))))
