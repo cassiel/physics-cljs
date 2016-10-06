@@ -8,6 +8,7 @@
 
   :dependencies [[quil "2.4.0"]
                  [cljsjs/matter "0.9.1-0"]
+                 [cljsjs/jquery "2.2.4-0"]
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.async "0.2.391"
