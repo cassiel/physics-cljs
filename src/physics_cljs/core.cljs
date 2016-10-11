@@ -19,12 +19,12 @@
   (q/frame-rate 60)
   ;; setup function returns initial state.
   (let [engine (m/new-engine)
-        statics (for [x (range 100 1200 100)
-                      y (range 100 500 100)]
+        statics (for [x (range 100 1200 75)
+                      y (range 100 700 75)]
                   (player/box :position [x y]
-                              :size [80 10]
+                              :size [50 10]
                               :opts {:isStatic true}))
-        players (for [x (range 100 1200 50)]
+        players (for [x (range 125 1200 50)]
                   (player/disc :position [x 50]
                                :radius 10
                                :colour [0 0 0]
@@ -41,7 +41,7 @@
   ;; Tickle the physics engine:
 
   (doseq [[i p r] (map #(vec [%1 %2 %3]) (range) statics rands)]
-    (.rotate m/BODY (px/get-body p) (- 0.05 (* r 0.1))))
+    (.rotate m/BODY (px/get-body p) (- 0.15 (* r 0.3))))
 
   (.update m/ENGINE engine (/ 1000 60))
   state)
