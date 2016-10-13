@@ -1,6 +1,6 @@
-(ns physics-cljs.player
-  (:require [physics-cljs.matter-core :as m]
-            [physics-cljs.protocols :as px]
+(ns net.cassiel.physics-cljs.player
+  (:require [net.cassiel.physics-cljs.matter-core :as m]
+            [net.cassiel.physics-cljs.protocols :as px]
             [quil.core :as q :include-macros true])
   )
 

@@ -1,4 +1,4 @@
-(ns physics-cljs.protocols)
+(ns net.cassiel.physics-cljs.protocols)
 
 (defprotocol PLAYER
   (draw [_] "Draw body at its position and rotation.")

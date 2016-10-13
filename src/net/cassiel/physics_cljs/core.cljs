@@ -1,9 +1,9 @@
-(ns physics-cljs.core
+(ns net.cassiel.physics-cljs.core
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as mw]
-            [physics-cljs.protocols :as px]
-            [physics-cljs.matter-core :as m]
-            [physics-cljs.player :as player]
+            [net.cassiel.physics-cljs.protocols :as px]
+            [net.cassiel.physics-cljs.matter-core :as m]
+            [net.cassiel.physics-cljs.player :as player]
             [cljsjs.jquery]))
 
 (enable-console-print!)

@@ -1,5 +1,5 @@
-(ns physics-cljs.matter-core
-  (:require [physics-cljs.protocols :as px]
+(ns net.cassiel.physics-cljs.matter-core
+  (:require [net.cassiel.physics-cljs.protocols :as px]
             [cljsjs.matter]))
 
 (def ENGINE js/Matter.Engine)

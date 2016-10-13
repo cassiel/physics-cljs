@@ -1,4 +1,4 @@
-(defproject physics-cljs "0.1.0-SNAPSHOT"
+(defproject net.cassiel/physics-cljs "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -30,14 +30,14 @@
                 ;; the presence of a :figwheel configuration here
                 ;; will cause figwheel to inject the figwheel client
                 ;; into your build
-                :figwheel {:on-jsload "physics-cljs.core/on-js-reload"
+                :figwheel {:on-jsload "net.cassiel.physics-cljs.core/on-js-reload"
                            ;; :open-urls will pop open your application
                            ;; in the default browser once Figwheel has
                            ;; started and complied your application.
                            ;; Comment this out once it no longer serves you.
                            :open-urls ["http://localhost:3449/index.html"]}
 
-                :compiler {:main physics-cljs.core
+                :compiler {:main net.cassiel.physics-cljs.core
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/physics_cljs.js"
                            :output-dir "resources/public/js/compiled/out"
@@ -51,7 +51,7 @@
                {:id "min"
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/physics_cljs.js"
-                           :main physics-cljs.core
+                           :main net.cassiel.physics-cljs.core
                            :optimizations :advanced
                            :pretty-print false}}]}
 
