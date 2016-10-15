@@ -5,6 +5,7 @@
 (def ENGINE js/Matter.Engine)
 (def BODY js/Matter.Body)
 (def BODIES js/Matter.Bodies)
+(def VERTICES js/Matter.Vertices)
 (def WORLD js/Matter.World)
 
 (defn new-engine [] (.create ENGINE #js {:timing #js {:timeScale 0.5}}))
