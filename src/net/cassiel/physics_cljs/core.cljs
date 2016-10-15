@@ -25,7 +25,7 @@
                               :size [50 10]
                               :opts {:isStatic true}))
         statics [(player/polygon :position [400 400]
-                                 :vertices [[350 150] [400 250] [300 250]]
+                                 :vertices [[0 0] [400 -150] [400 150]]
                                  :opts {:isStatic true})]
         players (for [x (range 125 1200 50)]
                   (player/disc :position [x 50]
@@ -46,7 +46,7 @@
   #_ (doseq [[i p r] (map #(vec [%1 %2 %3]) (range) statics rands)
           :let [r 0.45]]
        (.rotate m/BODY (px/get-body p) (- 0.15 (* r 0.3))))
-  ;;(.setAngle m/BODY (px/get-body (first statics)) 0.4)
+  (.rotate m/BODY (px/get-body (first statics)) 0.005)
 
   (.update m/ENGINE engine (/ 1000 60))
   state)

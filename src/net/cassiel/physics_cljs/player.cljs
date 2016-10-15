@@ -63,7 +63,7 @@
         (let [x0 (.. body -position -x)
               y0 (.. body -position -y)]
           (q/with-translation [x0 y0]
-            (q/with-rotation [(.. body -angle)]
+            (q/with-rotation [0 #_ (.. body -angle)]
               (q/no-stroke)
               (q/fill 0)
               (doseq [v (.-vertices body)]
