@@ -24,8 +24,8 @@
                   (player/box :position [x y]
                               :size [50 10]
                               :opts {:isStatic true}))
-        statics [(player/polygon :position [400 400]
-                                 :vertices [[0 0] [400 -150] [400 150]]
+        statics [(player/polygon :position [200 200]
+                                 :vertices [[0 0] [100 0] [100 100] [0 20]]
                                  :opts {:isStatic true})]
         players (for [x (range 125 1200 50)]
                   (player/disc :position [x 50]
@@ -45,21 +45,15 @@
 
   #_ (doseq [[i p r] (map #(vec [%1 %2 %3]) (range) statics rands)
           :let [r 0.45]]
-       (.rotate m/BODY (px/get-body p) (- 0.15 (* r 0.3))))
-  (.rotate m/BODY (px/get-body (first statics)) 0.005)
+       (.rotate m/BODY (px/get-body p) (- 0.15 (* r 0.1))))
+  (px/set-angle (first statics) (* (q/frame-count) 0.05))
 
   (.update m/ENGINE engine (/ 1000 60))
   state)
 
 (defn draw-state [{:keys [all] :as state}]
-  ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
-  ; Set circle color.
-  (q/fill 255)
-  ; Calculate x and y coordinates of the circle.
-
   (q/rect-mode :center)
-
   (doseq [p all] (px/draw p)))
 
 (defn on-js-reload []
@@ -72,12 +66,12 @@
   :host "canvas"
   :size [(.-innerWidth js/window)
          (.-innerHeight js/window)]
-                                        ; setup function called only once, during sketch initialization.
+  ;; setup function called only once, during sketch initialization.
   :setup setup
-                                        ; update-state is called on each iteration before draw-state.
+  ;; update-state is called on each iteration before draw-state.
   :update update-state
   :draw #'draw-state
-                                        ; This sketch uses functional-mode middleware.
-                                        ; Check quil wiki for more info about middlewares and particularly
-                                        ; fun-mode.
+  ;; This sketch uses functional-mode middleware.
+  ;; Check quil wiki for more info about middlewares and particularly
+  ;; fun-mode.
   :middleware [mw/fun-mode])

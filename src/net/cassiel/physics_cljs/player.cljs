@@ -26,6 +26,7 @@
         body (-> (.rectangle m/BODIES x y w h (clj->js opts))
                  remember-size)]
     (reify px/PLAYER
+      (set-angle [_ angle] (.setAngle m/BODY body angle))
       (draw [_]
         (q/with-translation [(.. body -position -x)
                              (.. body -position -y)]
@@ -41,6 +42,7 @@
         body (-> (.circle m/BODIES x y radius (clj->js opts))
                  remember-size)]
     (reify px/PLAYER
+      (set-angle [_ angle] (.setAngle m/BODY body angle))
       (draw [_]
         (q/with-translation [(.. body -position -x)
                              (.. body -position -y)]
@@ -54,21 +56,39 @@
   "Arbitrary polygon."
   [& {:keys [position vertices opts]}]
 
+  ;; Positioning is tricky; the position is set by matter.js as the centroid
+  ;; of the vertices. We want it at [0, 0].
+
   (let [[x y] position
         vs (clj->js (map (fn [[x y]] {:x x :y y}) vertices))
-        vs1 (.fromPath m/VERTICES "400 150 400 250 300 300")
-        body (.fromVertices m/BODIES x y vs (clj->js opts))]
+        vs-centroid (.centre m/VERTICES vs)
+        [cx cy] ((juxt #(.-x %) #(.-y %)) vs-centroid)
+        body (.fromVertices m/BODIES x y vs (clj->js opts))
+        _ (println "Centre of source vertices: " (.centre m/VERTICES vs))
+        _ (println "Centre of generated body: " (.centre m/VERTICES (.-vertices body)))
+        ]
+    (.translate m/BODY body vs-centroid)
     (reify px/PLAYER
+      (set-angle [_ angle]
+        (let [xp (+ x
+                    (* cx (js/Math.cos angle))
+                    (- (* cy (js/Math.sin angle))))
+              yp (+ y
+                    (* cy (js/Math.cos angle))
+                    (* cx (js/Math.sin angle)))]
+          (.setPosition m/BODY body #js {:x xp :y yp})
+          (.setAngle m/BODY body angle)))
       (draw [_]
-        (let [x0 (.. body -position -x)
-              y0 (.. body -position -y)]
-          (q/with-translation [x0 y0]
+        (let [xp (.. body -position -x)
+              yp (.. body -position -y)]
+          (q/with-translation [xp yp]
+            ;; Rotation seems to be applied in-place, so no need:
             (q/with-rotation [0 #_ (.. body -angle)]
               (q/no-stroke)
+              (q/fill 255 0 0)
+              (q/ellipse 0 0 10 10)
               (q/fill 0)
               (doseq [v (.-vertices body)]
-                (q/ellipse (- (.-x v) x0)
-                           (- (.-y v) y0) 5 5))
-              (q/fill 255 0 0)
-              (q/ellipse 0 0 5 5)))))
+                (q/ellipse (- (.-x v) xp)
+                           (- (.-y v) yp) 5 5))))))
       (get-body [_] body))))
