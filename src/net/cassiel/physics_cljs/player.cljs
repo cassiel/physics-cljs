@@ -20,7 +20,7 @@
                                           (- (.-y max) (.-y min))]))
     body))
 
-(defn box [& {:keys [position size colour opts]}]
+(defn box [& {:keys [position size colour stroke opts]}]
   (let [[x y] position
         [w h] size
         body (-> (.rectangle m/BODIES x y w h (clj->js opts))
@@ -32,6 +32,7 @@
                              (.. body -position -y)]
           (q/with-rotation [(.. body -angle)]
             (let [[w h] (get-property body :size)]
+              (if stroke (q/stroke stroke) (q/no-stroke))
               (apply q/fill (or colour [255 255 255]))
               (q/rect 0 0 w h)))))
 
